@@ -29,12 +29,14 @@ export const getUsers = async () => {
 };
 
 const day = new Date();
+day.setDate(day.getDate() + 6)
+console.log(day.getDate())
 
 let dateString = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(
   2,
   "0"
-)}-${String(day.getDate() + 6).padStart(2, "0")}`;
-console.log(dateString);
+)}-${String(day.getDate()).padStart(2, "0")}`;
+console.log(dateString)
 
 export const addFoodData = async (users) => {
   const foodData = {

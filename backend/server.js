@@ -1,10 +1,12 @@
 import express from "express";
 import { getAuth } from "firebase-admin/auth";
 import { getUsers } from "./admin";
+import cors from 'cors'
 // import { newData } from "./admin";
 
 const app = express();
 app.use(express.json());
+app.use(cors())
 
 // app.use("/add-user",newData);
 
@@ -32,12 +34,15 @@ app.use("/api/users", (req, res) => {
             email: user.email,
           });
         });
-        res.status(200).json(users)
-        console.log(users)
+      res.status(200).json(users);
+      console.log(users);
     });
 });
 
-
+app.use("/api/get-date/", (req, res) => {
+  let date = new Date();
+  res.status(200).json(date);
+});
 
 // export const getUsers = async () => {
 //   const users = [];
@@ -59,7 +64,7 @@ app.use("/api/users", (req, res) => {
 
 // setInterval(() => {
 //   getUsers();
-// }, 10000);
+// }, 100000);
 
 // app.use("/get-date", (req, res) => {
 //   getDate()
