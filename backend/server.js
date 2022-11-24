@@ -1,26 +1,38 @@
 import express from "express";
 import { getAuth } from "firebase-admin/auth";
-import { getUsers } from "./admin";
+import { checkDate, getUsers } from "./admin";
 import cors from 'cors'
+import bodyParser from 'body-parser'
 // import { newData } from "./admin";
+
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json())
+
 app.use(cors())
+
 
 // app.use("/add-user",newData);
 
-app.use("/get-data", (req, res) => {
+app.get("/get-data",async (req, res) => {
+  if(await checkDate()){
+    res.status(200).json("already exist")
+    return;
+  }
+  console.log(checkDate())
   getUsers()
     .then(() => {
-      res.status(200).send("h");
+      res.status(200).json("ok");
     })
     .catch((e) => {
       console.log(e);
     });
 });
 
-app.use("/api/users", (req, res) => {
+app.get("/api/users",(req, res) => {
   const users = [];
   getAuth()
     .listUsers(1000, "/")
@@ -39,7 +51,7 @@ app.use("/api/users", (req, res) => {
     });
 });
 
-app.use("/api/get-date/", (req, res) => {
+app.use("/api/get-date", (req, res) => {
   let date = new Date();
   res.status(200).json(date);
 });

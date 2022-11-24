@@ -1,7 +1,6 @@
 import admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
 import { Timestamp } from "firebase-admin/firestore";
-import serviceAccount from "./serviceAccountKey.json";
 import * as dotenv from "dotenv";
 dotenv.config();
 import { key } from "./service";
@@ -29,14 +28,12 @@ export const getUsers = async () => {
 };
 
 const day = new Date();
-day.setDate(day.getDate() + 6)
-console.log(day.getDate())
+day.setDate(day.getDate() + 8)
 
 let dateString = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(
   2,
   "0"
 )}-${String(day.getDate()).padStart(2, "0")}`;
-console.log(dateString)
 
 export const addFoodData = async (users) => {
   const foodData = {
@@ -44,7 +41,7 @@ export const addFoodData = async (users) => {
     noon: true,
     night: true,
   };
-
+  let count = 0
   users.forEach(async (user) => {
     const result = await admin
       .firestore()
@@ -57,14 +54,23 @@ export const addFoodData = async (users) => {
         name: user?.name,
         foodData,
       })
-      .then(() => {
-        console.log("Successfully added");
-      })
       .catch((e) => {
         console.log(e);
       });
   });
 };
+
+export const checkDate = async () => {
+  let condition = false
+  await admin.firestore().collection(dateString).get().then((snapshot) => {
+    if(!snapshot.empty){
+      condition = true
+    }
+    else condition = false
+  }
+  )
+  return condition
+}
 
 // export const getDate = async () => {
 //   const userList = [];
